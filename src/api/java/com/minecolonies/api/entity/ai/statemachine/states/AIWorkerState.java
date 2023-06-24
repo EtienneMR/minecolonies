@@ -327,6 +327,11 @@ public enum AIWorkerState implements IAIState
      */
     ADD_FUEL_TO_FURNACE(true),
 
+    /**
+     * Break down ores.
+     */
+    BREAK_ORES(true),
+
     /*
 ###Cook###
      */
@@ -368,6 +373,11 @@ public enum AIWorkerState implements IAIState
      * Milk cows!
      */
     COWBOY_MILK(false),
+
+    /**
+     * Milk mooshrooms!
+     */
+    COWBOY_STEW(false),
 
     /*
 ### Shepherd ###

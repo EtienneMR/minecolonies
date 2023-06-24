@@ -3,7 +3,6 @@ package com.minecolonies.api.tileentities;
 import com.minecolonies.api.blocks.AbstractBlockMinecoloniesRack;
 import com.minecolonies.api.blocks.ModBlocks;
 import com.minecolonies.api.blocks.types.RackType;
-import com.minecolonies.api.colony.IColonyManager;
 import com.minecolonies.api.crafting.ItemStorage;
 import com.minecolonies.api.inventory.api.CombinedItemHandler;
 import com.minecolonies.api.inventory.container.ContainerRack;
@@ -306,7 +305,7 @@ public class TileEntityRack extends AbstractTileEntityRack
     @Override
     public AbstractTileEntityRack getOtherChest()
     {
-        if (getBlockState().getBlock() != ModBlocks.blockRack)
+        if (level == null || getBlockState().getBlock() != ModBlocks.blockRack)
         {
             return null;
         }
@@ -342,7 +341,7 @@ public class TileEntityRack extends AbstractTileEntityRack
     public void load(final CompoundTag compound)
     {
         super.load(compound);
-        if (compound.getAllKeys().contains(TAG_SIZE))
+        if (compound.contains(TAG_SIZE))
         {
             size = compound.getInt(TAG_SIZE);
             inventory = createInventory(DEFAULT_SIZE + size * SLOT_PER_LINE);

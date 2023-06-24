@@ -356,6 +356,35 @@ public final class StandardRequests
             // This can be just the delivery icon. For the user, it's no big deal.
             return new ResourceLocation("minecolonies:textures/gui/citizen/delivery.png");
         }
+
+        @Override
+        public List<MutableComponent> getResolverToolTip(final IColonyView colony)
+        {
+            final String requester = getRequester().getRequesterDisplayName(colony.getRequestManager(), this).getString();
+
+            int posInList = -1;
+            for (IBuildingView view : colony.getBuildings())
+            {
+                if (view.getBuildingType() == ModBuildings.deliveryman.get())
+                {
+                    posInList = getPosInList(colony, view, getId());
+                    if (posInList >= 0)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (posInList >= 0)
+            {
+                return posInList == 0 ? ImmutableList.of(Component.translatable(FROM, requester), Component.translatable(IN_PROGRESS)) : ImmutableList.of(Component.translatable(FROM, requester), Component.translatable(IN_QUEUE, posInList));
+            }
+            else
+            {
+                return ImmutableList.of(Component.translatable(FROM, requester));
+            }
+        }
+
     }
 
     /**
@@ -388,7 +417,7 @@ public final class StandardRequests
         @Override
         public MutableComponent getDisplayPrefix()
         {
-            return Component.translatable(RequestSystemTranslationConstants.REQUEST_SYSTEM_CRAFTING_DISPLAY, Component.literal(String.valueOf(getRequest().getMinCount())));
+            return Component.translatable(RequestSystemTranslationConstants.REQUEST_SYSTEM_CRAFTING_DISPLAY_SHORT, Component.literal(String.valueOf(getRequest().getMinCount())));
         }
 
         @Override

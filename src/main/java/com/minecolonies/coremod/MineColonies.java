@@ -31,7 +31,6 @@ import com.minecolonies.coremod.proxy.ServerProxy;
 import com.minecolonies.coremod.structures.MineColoniesStructures;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -91,6 +90,14 @@ public class MineColonies
         ModSoundEvents.SOUND_EVENTS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModInteractionsInitializer.DEFERRED_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModResearchEffectInitializer.DEFERRED_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+        ModQuestInitializer.DEFERRED_REGISTER_OBJECTIVE.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModQuestInitializer.DEFERRED_REGISTER_TRIGGER.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModQuestInitializer.DEFERRED_REGISTER_REWARD.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModQuestInitializer.DEFERRED_REGISTER_ANSWER_RESULT.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModHappinessFactorTypeInitializer.DEFERRED_REGISTER_HAPPINESS_FACTOR.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModHappinessFactorTypeInitializer.DEFERRED_REGISTER_HAPPINESS_FUNCTION.register(FMLJavaModLoadingContext.get().getModEventBus());
+
 
         ModEnchantInitializer.init();
 
@@ -204,6 +211,17 @@ public class MineColonies
      */
     @SubscribeEvent
     public static void onConfigReload(final ModConfigEvent.Reloading event)
+    {
+        if (event.getConfig().getType() == ModConfig.Type.COMMON)
+        {
+            // ModConfig fires for each of server, client, and common.
+            // Request Systems logging only really needs to be changed on the server, and this reduced log spam.
+            RequestSystemInitializer.reconfigureLogging();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onConfigLoaded(final ModConfigEvent.Loading event)
     {
         if (event.getConfig().getType() == ModConfig.Type.COMMON)
         {

@@ -33,6 +33,9 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.Nullable;
 
@@ -157,16 +160,17 @@ public class SurvivalHandler implements ISurvivalBlueprintHandler
                   placementSettings.getMirror() != Mirror.NONE,
                   packName,
                   blueprintPath);
+                MinecraftForge.EVENT_BUS.post(new BlockEvent.EntityPlaceEvent(BlockSnapshot.create(world.dimension(), world, blockPos), world.getBlockState(blockPos.below()), player));
 
                 int level = 0;
                 boolean finishedUpgrade = false;
                 if (compound != null)
                 {
-                    if (compound.getAllKeys().contains(TAG_OTHER_LEVEL))
+                    if (compound.contains(TAG_OTHER_LEVEL))
                     {
                         level = compound.getInt(TAG_OTHER_LEVEL);
                     }
-                    if (compound.getAllKeys().contains(TAG_PASTEABLE))
+                    if (compound.contains(TAG_PASTEABLE))
                     {
                         String newBlueprintPath = blueprintPath;
                         newBlueprintPath = newBlueprintPath.substring(0, newBlueprintPath.length() - 1);

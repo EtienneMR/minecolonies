@@ -140,7 +140,7 @@ public abstract class AbstractEntityAICrafting<J extends AbstractJobCrafter<?, J
             {
                 if (building.isInBuilding(worker.blockPosition()))
                 {
-                    worker.getNavigation().moveToRandomPos(100, DEFAULT_SPEED, building.getCorners(), AbstractAdvancedPathNavigate.RestrictionType.XYZ);
+                    worker.getNavigation().moveToRandomPos(10, DEFAULT_SPEED, building.getCorners(), AbstractAdvancedPathNavigate.RestrictionType.XYZ);
                 }
                 else
                 {
@@ -181,12 +181,40 @@ public abstract class AbstractEntityAICrafting<J extends AbstractJobCrafter<?, J
             return getState();
         }
 
+        if (currentRecipeStorage != null && InventoryUtils.hasItemInItemHandler(worker.getInventoryCitizen(), stack -> !isPartOfRecipe(stack, currentRecipeStorage)))
+        {
+            return INVENTORY_FULL;
+        }
+
         if (currentRequest != null && currentRecipeStorage != null)
         {
             return QUERY_ITEMS;
         }
 
         return GET_RECIPE;
+    }
+
+    /**
+     * Check if stack is part of the recipe.
+     * @param stack the stack to check.
+     * @param currentRecipeStorage the recipe to compare.
+     * @return true if so.
+     */
+    private boolean isPartOfRecipe(final ItemStack stack, final IRecipeStorage currentRecipeStorage)
+    {
+        if (ItemStackUtils.compareItemStacksIgnoreStackSize(stack, currentRecipeStorage.getPrimaryOutput()))
+        {
+            return true;
+        }
+
+        for (final ItemStorage input : currentRecipeStorage.getCleanedInput())
+        {
+            if (input.equals(new ItemStorage(stack)))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
